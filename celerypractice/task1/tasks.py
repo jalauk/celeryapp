@@ -4,12 +4,12 @@ from django.core.mail import send_mail
 from django.conf import settings
 from celery.exceptions import SoftTimeLimitExceeded, TimeLimitExceeded
 import time
+from .decorator import decorator1
 
 
 @shared_task(bind=True, soft_time_limit=10, time_limit=20)
-def send_mail_func(self):
-    try:
-        time.sleep(30)
-    except SoftTimeLimitExceeded:
-        print("work")
-        raise TimeLimitExceeded
+@decorator1
+def send_mail_func(self, id):
+    print(id)
+    time.sleep(30)
+    return
