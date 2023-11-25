@@ -2,20 +2,14 @@ from celery import shared_task
 from django.contrib.auth import get_user_model
 from django.core.mail import send_mail
 from django.conf import settings
+from celery.exceptions import SoftTimeLimitExceeded, TimeLimitExceeded
+import time
 
 
-@shared_task(bind=True)
+@shared_task(bind=True, soft_time_limit=10, time_limit=20)
 def send_mail_func(self):
-    users = get_user_model().objects.all()
-    for user in users:
-        mail_sub = "Hi"
-        message = "work"
-        to_email = user.email
-        send_mail(
-            subject=mail_sub,
-            message=message,
-            from_email=settings.EMAIL_HOST_USER,
-            recipient_list=[to_email],
-            fail_silently=True
-        )
-    return "Done"
+    try:
+        time.sleep(30)
+    except SoftTimeLimitExceeded:
+        print("work")
+        raise TimeLimitExceeded
