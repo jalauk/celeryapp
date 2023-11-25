@@ -7,5 +7,6 @@ def decorator1(func):
             print("ghg")
             return func(*args, **kwargs)
         except SoftTimeLimitExceeded:
-            raise TimeLimitExceeded
+            print("time limit exceed")
+            return
     return wrapper
